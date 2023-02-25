@@ -1,4 +1,4 @@
-ode(){
+node(){
     stage('code checkout') {
         echo "checking out Source code"
     }
