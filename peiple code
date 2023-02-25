@@ -1,0 +1,9 @@
+ode(){
+    stage('code checkout') {
+        echo "checking out Source code"
+    }
+    
+    stage('Build & Test Automation') {
+        echo "Performing Build & test Automation"
+    }
+    }
