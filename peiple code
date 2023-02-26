@@ -1,9 +1,18 @@
-node(){
-    stage('code checkout') {
-        echo "checking out Source code"
-    }
-    
-    stage('Build & Test Automation') {
-        echo "Performing Build & test Automation"
-    }
-    }
+echo "Performing Build & test Automation"
+        sh """ls -lart
+        mvn clean install
+        ls -lart target
+"""
+   }
+   
+   stage('code Deploy') {
+       echo "building Image"
+       sh """docker build -t banking .
+       docker run -itd -p 8087:8081 banking 
+       docker login -u madhu443 -p Madhu@1843
+       docker tag banking madhu443/banking
+       docker push madhu443/banking """
+        
+   } 
+
+}    
