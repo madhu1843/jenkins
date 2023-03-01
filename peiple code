@@ -1,18 +1,35 @@
-echo "Performing Build & test Automation"
-        sh """ls -lart
-        mvn clean install
-        ls -lart target
-"""
-   }
-   
-   stage('code Deploy') {
-       echo "building Image"
-       sh """docker build -t banking .
-       docker run -itd -p 8087:8081 banking 
-       docker login -u madhu443 -p Madhu@1843
-       docker tag banking madhu443/banking
-       docker push madhu443/banking """
-        
-   } 
 
-}    
+node(){
+    stage ("git checkout"){
+        git 'https://github.com/pathansameerkhan2001/star-agile-banking-finance.git'
+        echo "git complet"
+        
+    }
+    stage ("maven build "){
+        sh """mvn clean install """
+        echo "maven build done"
+    }
+    stage ("build image"){
+        sh """docker image prune -a -f
+        docker build -t banking ."""
+        echo "build done"
+        
+        
+    }
+    stage ("run the images "){
+        echo "container done "
+        sh """ docker run -itd -p 8085:8081 banking """
+    }
+    stage ("push into docker hub"){
+        echo "push done "
+         sh """docker login -u pathansameerkhan2001 -p sameer123
+         docker tag banking:latest pathansameerkhan2001/banking:latest
+         docker push  pathansameerkhan2001/banking:latest """
+         
+    }
+    stage ("deploy on ansible "){
+        echo "deploy done  "
+        ansiblePlaybook become: true, credentialsId: 'ansible', disableHostKeyChecking: true, installation: 'ansible', inventory: '/etc/ansible/hosts', playbook: '/etc/ansible/deploy.yml'
+        
+    }
+}
